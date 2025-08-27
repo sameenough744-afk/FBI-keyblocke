@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FBI KeyBlocker v4.8 – Classified Endpoint</title>
+  <style>
+    body { background: black; color: #00FF00; font-family: monospace; padding: 20px; }
+    .blink { animation: blink 1s step-start infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    #notifications { margin-top: 20px; border-top: 1px solid #00FF00; padding-top: 10px; }
+    .alert { margin: 5px 0; border: 1px solid #00FF00; padding: 5px; }
+    .alert img { max-width: 200px; display: block; margin-top: 5px; }
+    input, button { font-family: monospace; padding: 5px; margin-top: 5px; }
+    input { background: black; color: #00FF00; border: 1px solid #00FF00; width: 250px; }
+    button { background: #00FF00; color: black; border: none; cursor: pointer; }
+    #adminBox { display:none; margin-top:20px; border-top:1px solid #00FF00; padding-top:10px; }
+  </style>
+</head>
+<body>
+<pre id="console"></pre>
+
+<div id="inputBox" style="display:none;">
+  <input type="text" id="emailInput" placeholder="Enter Gmail" required /><br>
+  <input type="file" id="imageInput" accept="image/*" required /><br>
+  <input type="text" id="extraInput" placeholder="Extra info (optional)" /><br>
+  <button onclick="submitForm()">Bind Key</button>
+</div>
+
+<div id="notifications"></div>
+
+<!-- Hidden Admin Panel -->
+<div id="adminBox">
+  <h3 style="color:#00FF00;">Admin Controls</h3>
+  <input type="password" id="adminPassword" placeholder="Enter password" /><br>
+  <input type="text" id="adminMessage" placeholder="Type notification..." /><br>
+  <input type="file" id="adminImage" accept="image/*" /><br>
+  <button onclick="sendAdminNotification()">Send</button>
+</div>
+
+<script>
+const lines = [
+  ">>> FBI KEYBLOCKER v4.8 – CLASSIFIED ENDPOINT DEPLOYMENT",
+  "SYSTEM BOOT SEQUENCE INITIATED",
+  "[█░░░░░░░░░░░░░░░░░░░░] 3% – Initializing Core CPU Modules",
+  "[███░░░░░░░░░░░░░░░░░░] 7% – Loading Cryptographic Core Engines",
+  "[█████░░░░░░░░░░░░░░░░] 12% – Lock-Cycle Protocol Initialization",
+  ">>> Lock-Cycle Protocol: ACTIVE",
+  "[███████░░░░░░░░░░░░░░] 18% – Engaging Quarantine Net Modules",
+  ">>> Quarantine Net: ENGAGED",
+  "[██████████░░░░░░░░░░░] 25% – Establishing Triple-Tunnel Encryption Channels",
+  ">>> User Layer: STABLE",
+  ">>> Telemetry Layer: STABLE",
+  ">>> Admin Layer: STABLE",
+  "[████████████░░░░░░░░░] 35% – Endpoint Integrity Verification",
+  "[█████████████████████████] 100% – SYSTEM SECURE",
+  ">>> SYSTEM READY",
+  ">>> Waiting for authorized input _"
+];
+
+const consoleEl = document.getElementById("console");
+let i = 0;
+
+function typeLine() {
+  if (i < lines.length) {
+    consoleEl.innerHTML += lines[i] + "\n";
+    i++;
+    setTimeout(typeLine, 120);
+  } else {
+    document.getElementById("inputBox").style.display = "block";
+  }
+}
+typeLine();
+
+function submitForm() {
+  const email = document.getElementById("emailInput").value.trim();
+  const fileInput = document.getElementById("imageInput");
+  const extra = document.getElementById("extraInput").value.trim();
+  
+  if(!email || fileInput.files.length === 0){
+    alert("Enter Gmail and upload image");
+    return;
+  }
+
+  const fileURL = URL.createObjectURL(fileInput.files[0]);
+  sendNotification(`FBI KEYBLOCKER ALERT – Endpoint secured for: ${email}`, fileURL);
+
+  if(extra) sendNotification(`Extra info: ${extra}`);
+
+  setTimeout(()=>sendNotification("ALERT: Network scan complete"), 2000);
+  setTimeout(()=>sendNotification("ALERT: Malware signature verified"), 4000);
+  setTimeout(()=>sendNotification("ALERT: Image captured", fileURL), 6000);
+}
+
+function sendNotification(message, img=null){
+  const notifications = document.getElementById("notifications");
+  const alertDiv = document.createElement("div");
+  alertDiv.className = "alert";
+  alertDiv.innerHTML = message;
+  if(img){
+    const imgEl = document.createElement("img");
+    imgEl.src = img;
+    alertDiv.appendChild(imgEl);
+  }
+  notifications.appendChild(alertDiv);
+}
+
+// ===== Admin Panel Control =====
+function sendAdminNotification() {
+  const password = document.getElementById("adminPassword").value;
+  if(password !== "Ejovi123") {
+    alert("Unauthorized");
+    return;
+  }
+
+  const msg = document.getElementById("adminMessage").value.trim();
+  const imgInput = document.getElementById("adminImage");
+  let imgURL = null;
+  if(imgInput.files.length > 0) imgURL = URL.createObjectURL(imgInput.files[0]);
+
+  if(msg) sendNotification(">>> ADMIN: " + msg, imgURL);
+}
+
+// ===== Unlock admin with triple click on SYSTEM READY line =====
+consoleEl.addEventListener('click', function(e){
+  if(e.target.innerText.includes("SYSTEM READY")){
+    clickCounter++;
+    if(clickCounter === 3){
+      document.getElementById("adminBox").style.display = "block";
+      sendNotification(">>> ADMIN ACCESS GRANTED");
+    }
+    setTimeout(()=>{clickCounter=0},2000);
+  }
+});
+let clickCounter = 0;
+
+</script>
+</body>
+</html>
